@@ -1,7 +1,17 @@
 {
-  "name": "my-razzle-app",
   "version": "0.1.0",
   "license": "MIT",
+  "scripts": {
+    "start": "razzle start",
+    "build": "razzle build",
+    "test": "razzle test --env=jsdom",
+    "start:prod": "NODE_ENV=production node build/server.js"
+  },
+  "name": "megafon-testtask",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Danilkinkin",
+  "main": "index.js",
   "scripts": {
     "start": "razzle start",
     "build": "razzle build",
@@ -11,6 +21,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "razzle": "^3.0.0",
+    "lorem-ipsum": "^2.0.3",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.0.1"
