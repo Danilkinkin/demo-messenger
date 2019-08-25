@@ -103,3 +103,10 @@ function randomChoose(array) {
 function handle(message) {
     store.dispatch({type:"PUSH_MESSAGE", payload:message})
 }
+
+export function preferTime(time){
+	let h = time.getHours();
+	let m = time.getMinutes();
+	
+	return h+":"+(m<10? "0" : "")+m;
+}

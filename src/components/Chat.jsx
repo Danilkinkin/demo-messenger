@@ -17,6 +17,7 @@ import { readRoom } from "../redux/actions";
 import { CHANNELS } from "../channels";
 import dataApp from "../dataApp.js";
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import { preferTime } from "../App.js";
 
 const drawerWidth = 360;
 
@@ -59,6 +60,14 @@ const styles = theme => {
 		    marginBottom: theme.spacing(2),
 			right: theme.spacing(2),
 			zIndex: 100
+		},
+		messageTime: {
+			marginLeft: "auto",
+			float: "right",
+			paddingLeft: "8px",
+			fontSize: "12px",
+		    opacity: .6,
+		    marginTop: "3px"
 		}
 	}
 };
@@ -144,7 +153,10 @@ class Chat extends React.Component {
 						{divider}
 						<ListItem alignItems="flex-start" className={classes.message+" "+(message.autor == "Me"? classes.myMessage : "")}>
 					        <Typography variant="body2" className={classes.messageText}>
-			            	{message.body}
+				            	{message.body}
+				            	<Typography variant="body2" component="span" className={classes.messageTime}>
+				            		{preferTime(message.ts)}
+				          		</Typography>
 			          		</Typography>
 						</ListItem>
 					</React.Fragment>

@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { connect } from "react-redux";
 import { toggleMenu } from "./redux/actions";
+import dataApp from "./dataApp.js";
 
 const drawerWidth = 360;
 
@@ -51,7 +52,7 @@ const styles = theme => {
 class Home extends React.Component {
 	constructor(props){
 		super(props);
-		document.title = "Home";
+		document.title = "Чаты";
 
 		this.state = {
 
@@ -66,6 +67,9 @@ class Home extends React.Component {
 
 	render(){
 		const { classes } = this.props;
+
+		if(dataApp.unreadMessages > 0) document.title = "Новых сообщений: " + dataApp.unreadMessages;
+		else document.title = "Чаты";
 
 		if(isWidthUp('md', this.props.width) && this.props.app.isMobile) this.props.toggleMenu();
 

@@ -56,20 +56,6 @@ export default function(state = initialState, action) {
       dataApp.rooms = initialState.rooms;
       dataApp.roomsTimeline = initialState.timeline;
 
-      /*if(dataApp.selectRoomId == message.roomId){
-        console.log(dataApp.selectRoomId != message.roomId ,
-        dataApp.selectChannelId != initialState.rooms[message.roomId].lastMessage.channelId &&
-        dataApp.selectChannelId != CHANNELS.ALL)
-
-        if(
-          dataApp.selectRoomId != message.roomId ||
-          dataApp.selectChannelId != initialState.rooms[message.roomId].lastMessage.channelId &&
-          dataApp.selectChannelId != CHANNELS.ALL
-        ){
-          console.log("NEW UNREAD", initialState.rooms[message.roomId].unread)
-        }
-      }*/
-
       if(
         dataApp.selectRoomId != message.roomId ||
         dataApp.selectChannelId != initialState.rooms[message.roomId].lastMessage.channelId &&
@@ -98,14 +84,12 @@ export default function(state = initialState, action) {
       dataApp.selectRoomId = roomId;
 
       if(dataApp.selectChannelId == CHANNELS.ALL){
-        console.log(initialState.rooms[roomId].unread[CHANNELS.ALL])
         dataApp.unreadMessages -= initialState.rooms[roomId].unread[CHANNELS.ALL];
         for(var channel in initialState.rooms[roomId].unread){
           initialState.rooms[roomId].unread[channel] = 0;
         }
       }else{
         initialState.rooms[roomId].unread[CHANNELS.ALL] -= initialState.rooms[roomId].unread[dataApp.selectChannelId];
-        console.log(initialState.rooms[roomId].unread[dataApp.selectChannelId])
         dataApp.unreadMessages -= initialState.rooms[roomId].unread[dataApp.selectChannelId];
         initialState.rooms[roomId].unread[dataApp.selectChannelId] = 0;
       }

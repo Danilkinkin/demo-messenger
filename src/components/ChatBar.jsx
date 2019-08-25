@@ -90,14 +90,16 @@ class ChatBar extends React.Component {
 		          	<Typography variant="h6" className={classes.headerTitle}>
 		            	{this.props.chat.roomId || "Чат не выбран"}
 		          	</Typography>
-		          	<Button 
-		          		color="inherit"
-		          		aria-controls="simple-menu" 
-		          		aria-haspopup="true" 
-		          		onClick={this.handleSelectSourceMenu}
-		          	>
-		          		{this.props.chat.channelId}
-		          	</Button>
+		          	<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.ALL] : null} color="secondary">
+						<Button 
+			          		color="inherit"
+			          		aria-controls="simple-menu" 
+			          		aria-haspopup="true" 
+			          		onClick={this.handleSelectSourceMenu}
+			          	>
+			          		{this.props.chat.channelId}
+			          	</Button>
+		          	</Badge>
 		          	<Menu
 						id="simple-menu"
 						anchorEl={this.state.anchorEl}

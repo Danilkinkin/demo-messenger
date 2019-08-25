@@ -20,6 +20,7 @@ import {
 import { connect } from "react-redux";
 import { toggleRoom, readRoom, toggleMenu } from "../redux/actions";
 import { CHANNELS } from "../channels";
+import { preferTime } from "../App.js";
 
 const styles = theme => ({
 	root: {
@@ -73,7 +74,7 @@ function MessagePreview(props) {
 	                className={ classes.timeDialog }
 	                color="textPrimary"
 	              >
-	                {props.message.ts.getHours()+":"+props.message.ts.getMinutes()}
+	                {preferTime(props.message.ts)}
 	              </Typography>	              
 	            </React.Fragment>
 	          }
