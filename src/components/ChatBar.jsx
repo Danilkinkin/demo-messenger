@@ -11,6 +11,9 @@ import {
 	MenuItem
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import { connect } from "react-redux";
+import { toggleMenu, toggleChannel } from "../redux/actions";
+import { CHANNELS } from "../channels";
 
 const drawerWidth = 360;
 
@@ -44,6 +47,7 @@ class ChatBar extends React.Component {
 
 		this.handleSelectSourceMenu = this.handleSelectSourceMenu.bind(this);
 		this.handleSelectSource = this.handleSelectSource.bind(this);
+		this.handleMenuToggle = this.handleMenuToggle.bind(this);
 	}
 
 	handleSelectSourceMenu(e) {
@@ -54,6 +58,11 @@ class ChatBar extends React.Component {
 	handleSelectSource(e) {
 		this.state.anchorEl = null;
 		this.setState(this.state);
+		if(e) this.props.toggleChannel(e);
+	}
+
+	handleMenuToggle() {
+		this.props.toggleMenu();
 	}
 
 	render(){
@@ -74,18 +83,46 @@ class ChatBar extends React.Component {
 		          	<Typography variant="h6" className={classes.headerTitle}>
 		            	Babai Eban
 		          	</Typography>
-		          	<Button color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleSelectSourceMenu}>All channels</Button>
+		          	<Button 
+		          		color="inherit"
+		          		aria-controls="simple-menu" 
+		          		aria-haspopup="true" 
+		          		onClick={this.handleSelectSourceMenu}
+		          	>
+		          		{this.props.app.selectedChannel}
+		          	</Button>
 		          	<Menu
 						id="simple-menu"
 						anchorEl={this.state.anchorEl}
 						keepMounted
 						open={Boolean(this.state.anchorEl)}
-						onClose={this.handleSelectSource}
+						onClose={e => this.handleSelectSource()}
+						
 					>
-						<MenuItem onClick={this.handleSelectSource} selected>VK</MenuItem>
-						<MenuItem onClick={this.handleSelectSource}>OK</MenuItem>
-						<MenuItem onClick={this.handleSelectSource}>FB</MenuItem>
-						<MenuItem onClick={this.handleSelectSource}>All channels</MenuItem>
+						<MenuItem
+							onClick={e => this.handleSelectSource(CHANNELS.VK)}
+							selected={this.props.app.selectedChannel === CHANNELS.VK}
+						>
+							VK
+						</MenuItem>
+						<MenuItem
+							onClick={e => this.handleSelectSource(CHANNELS.OK)}
+							selected={this.props.app.selectedChannel === CHANNELS.OK}
+						>
+							OK
+						</MenuItem>
+						<MenuItem
+							onClick={e => this.handleSelectSource(CHANNELS.FB)}
+							selected={this.props.app.selectedChannel === CHANNELS.FB}
+						>
+							FB
+						</MenuItem>
+						<MenuItem
+							onClick={e => this.handleSelectSource(CHANNELS.ALL)}
+							selected={this.props.selectedChannel == CHANNELS.ALL}
+						>
+							All channels
+						</MenuItem>
 						</Menu>
 	        	</Toolbar>
 	      	</AppBar>
@@ -98,4 +135,7 @@ ChatBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ChatBar);
+export default connect(
+  state => state,
+  { toggleMenu, toggleChannel }
+)(withStyles(styles)(ChatBar));

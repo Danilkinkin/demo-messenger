@@ -1,7 +1,7 @@
 import React from 'react';
-import Chat from './activity/Chat.jsx';
-import ChatBar from './activity/ChatBar.jsx';
-import ChatsActivity from './activity/Chats.jsx';
+import Chat from './components/Chat.jsx';
+import ChatBar from './components/ChatBar.jsx';
+import ChatsActivity from './components/Chats.jsx';
 import { LoremIpsum } from "lorem-ipsum";
 import PropTypes from 'prop-types';
 import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
@@ -11,6 +11,8 @@ import {
 	Drawer,
 	Hidden
 } from '@material-ui/core';
+import { connect } from "react-redux";
+import { toggleMenu } from "./redux/actions";
 
 const drawerWidth = 360;
 
@@ -102,22 +104,20 @@ class Home extends React.Component {
 
 		this.state = {
 			dialogs: dialogs,
-			selectDialog: null,
-			isMobile: false
+			selectDialog: null
 		}
 
 		this.handleMenuToggle = this.handleChatsActivityToggle.bind(this);
 	}
 
 	handleChatsActivityToggle(e) {
-		this.state.isMobile = !this.state.isMobile;
 		this.setState(this.state);
 	}
 
 	render(){
 		const { classes } = this.props;
 
-		if(isWidthUp('md', this.props.width) && this.state.isMobile) this.handleMenuToggle();
+		if(isWidthUp('md', this.props.width) && this.props.app.isMobile) this.props.toggleMenu();
 
 		return (
 	  		<div className={classes.root}>
@@ -128,8 +128,8 @@ class Home extends React.Component {
 			        	<Drawer
 				            variant="temporary"
 				            anchor={'left'}
-				            open={this.state.isMobile}
-		            		onClose={this.handleMenuToggle}
+				            open={this.props.app.isMobile}
+		            		onClose={this.props.toggleMenu}
 				            classes={{paper: classes.drawerPaper}}
 				            className={classes.mobileMenu}
 				            ModalProps={{keepMounted: true}}
@@ -160,4 +160,4 @@ Home.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withWidth()(withStyles(styles)(Home));
+export default connect(state => state, { toggleMenu })(withWidth()(withStyles(styles)(Home)));

@@ -8,6 +8,8 @@ import {
 	Divider
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
+import { connect } from "react-redux";
+import { sendMessage } from "../redux/actions";
 
 const styles = theme => ({
 	root: {
@@ -38,8 +40,23 @@ class MessageInput extends React.Component {
 		super(props);
 
 		this.state = {
-
+			message: ""
 		}
+
+		this.handleSendMessage = this.handleSendMessage.bind(this);
+		this.handlePrintMessage = this.handlePrintMessage.bind(this);
+	}
+
+	handleSendMessage() {
+		this.props.sendMessage(this.state.message);
+		this.state.message = "";
+		document.getElementById("input-message").value = "";
+		this.setState(this.state);
+	}
+
+	handlePrintMessage(e) {
+		this.state.message = e.target.value;
+		this.setState(this.state);
 	}
 
 	render(){
@@ -51,10 +68,11 @@ class MessageInput extends React.Component {
 					className={classes.input}
 					placeholder="Введите сообщение"
 					multiline
-					inputProps={{ 'aria-label': 'Введите ваше сообщение' }}
+					inputProps={{ 'aria-label': 'Введите ваше сообщение', 'id': "input-message" }}
+					onChange={this.handlePrintMessage}
 				/>
 				<Divider className={classes.divider} orientation="vertical" />
-				<IconButton color="primary" className={classes.iconButton} aria-label="send">
+				<IconButton color="primary" className={classes.iconButton} aria-label="send" onClick={this.handleSendMessage}>
 					<SendIcon />
 				</IconButton>
 			</Paper>
@@ -67,4 +85,7 @@ MessageInput.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MessageInput);
+export default connect(
+  state => state,
+  { sendMessage }
+)(withStyles(styles)(MessageInput));

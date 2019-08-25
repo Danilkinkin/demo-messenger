@@ -4,8 +4,8 @@ import Switch from 'react-router-dom/Switch';
 import Home from './Home.jsx';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-//import { Provider } from "react-redux";
-//import store from "./redux/store";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 
 const styles = theme => ({
@@ -17,8 +17,6 @@ const styles = theme => ({
     height: "100%"
   }
 });
-
-//const store = createStore(rootReducer)
 
 class App extends React.Component{
 	constructor(props){
@@ -32,9 +30,9 @@ class App extends React.Component{
 		document.getElementById("root").className = classes.root;
 
 		return (
-			//<Provider store={store}>
+			<Provider store={store}>
 				<Home />
-			//</Provider>
+			</Provider>
 		);
 	}
 }
