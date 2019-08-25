@@ -26,12 +26,19 @@ const styles = theme => ({
 	},
 	iconButton: {
 		padding: 10,
-		marginTop: "auto"
+		marginTop: "auto",
+		transition: ".25s cubic-bezier(0.75, 0, 0.1, 1.01)"
 	},
 	divider: {
 		height: 28,
 		margin: "8px 4px",
-		marginTop: "auto"
+		marginTop: "auto",
+		transition: ".25s cubic-bezier(0.75, 0, 0.1, 1.01)"
+	},
+	hidden: {
+		opacity: 0,
+		pointerEvents: "none",
+		transform: "scale(.8)"
 	}
 });
 
@@ -45,6 +52,7 @@ class MessageInput extends React.Component {
 
 		this.handleSendMessage = this.handleSendMessage.bind(this);
 		this.handlePrintMessage = this.handlePrintMessage.bind(this);
+		this.handleCtrlEnter = this.handleCtrlEnter.bind(this);
 	}
 
 	handleSendMessage() {
@@ -59,8 +67,14 @@ class MessageInput extends React.Component {
 		this.setState(this.state);
 	}
 
+	handleCtrlEnter(e) {
+		if(e.ctrlKey && e.keyCode == 13) this.handleSendMessage();
+	}
+
 	render(){
 		const { classes } = this.props;
+
+		let helperHidden = this.state.message.length > 0? "" : classes.hidden;
 
 		return (
 	  		<Paper className={classes.root}>
@@ -68,11 +82,15 @@ class MessageInput extends React.Component {
 					className={classes.input}
 					placeholder="Введите сообщение"
 					multiline
-					inputProps={{ 'aria-label': 'Введите ваше сообщение', 'id': "input-message" }}
+					inputProps={{
+						'aria-label': 'Введите ваше сообщение',
+						'id': "input-message",
+						'onKeyDown': this.handleCtrlEnter
+					}}
 					onChange={this.handlePrintMessage}
 				/>
-				<Divider className={classes.divider} orientation="vertical" />
-				<IconButton color="primary" className={classes.iconButton} aria-label="send" onClick={this.handleSendMessage}>
+				<Divider className={classes.divider+" "+helperHidden} orientation="vertical" />
+				<IconButton color="primary" className={classes.iconButton+" "+helperHidden} aria-label="send" onClick={this.handleSendMessage}>
 					<SendIcon />
 				</IconButton>
 			</Paper>
