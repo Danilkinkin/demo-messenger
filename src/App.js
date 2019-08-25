@@ -8,9 +8,23 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 const loremIpsum = require('lorem-ipsum').loremIpsum;
 import { useDispatch } from 'react-redux';
-import Dexie from 'dexie';
 import dataApp from "./dataApp.js";
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+import purple from '@material-ui/core/colors/purple';
+import deepPurple from '@material-ui/core/colors/deepPurple';
 
+
+let theme = createMuiTheme({
+  palette: {
+    primary: deepPurple,
+    secondary: purple,
+  },
+  status: {
+    danger: 'orange',
+  },
+});
+theme = responsiveFontSizes(theme);
 
 const styles = theme => ({
   body: {
@@ -37,7 +51,9 @@ class App extends React.Component{
 
 		return (
 			<Provider store={store}>
-				<Home />
+				<ThemeProvider theme={theme}>
+					<Home />
+				</ThemeProvider>
 			</Provider>
 		);
 	}
@@ -87,27 +103,3 @@ function randomChoose(array) {
 function handle(message) {
     store.dispatch({type:"PUSH_MESSAGE", payload:message})
 }
-
-/*var db = new Dexie("FriendDatabase");
-db.version(1).stores({
-	rooms: "id,timeline, unread",
-
-});
- 
-db.transaction('rw', db.friends, async() => {
- 
-    // Make sure we have something in DB:
-    if ((await db.friends.where('name').equals('Josephine').count()) === 0) {
-        let id = await db.friends.add({name: "Josephine", age: 21});
-        alert (`Addded friend with id ${id}`);
-    }
- 
-    // Query:
-    let youngFriends = await db.friends.where("age").below(25).toArray();
- 
-    // Show result:
-    alert ("My young friends: " + JSON.stringify(youngFriends));
- 
-}).catch(e => {
-    alert(e.stack || e);
-});*/

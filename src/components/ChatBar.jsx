@@ -127,7 +127,7 @@ class ChatBar extends React.Component {
 							selected={this.props.chat.channelId === CHANNELS.FB}
 						>
 							<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.FB] : null} color="secondary">
-								VK
+								FB
 							</Badge>
 						</MenuItem>
 						<MenuItem

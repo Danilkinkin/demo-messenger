@@ -54,13 +54,28 @@ class Chat extends React.Component {
 	constructor(props){
 		super(props);
 
-		this.state = {
+		this.state = {			
+			userScroll: false,
+			messageList: document.getElementById("message-list")
+		}		
+	}
 
-		}
+	componentDidMount(){
+		this.state.messageList = document.getElementById("message-list")
+	}
+
+	componentDidUpdate(){
+		//if(this.state.userScroll && this.state.messageList) this.state.messageList.lastChild.scrollIntoView(false);
 	}
 
 	render(){
 		const { classes } = this.props;
+
+		/*if(this.state.messageList){
+			console.log(this.state.messageList.scrollTop , this.state.messageList.scrollHeight - this.state.messageList.clientHeight)
+
+			this.state.userScroll = this.state.messageList.scrollTop != this.state.messageList.scrollHeight - this.state.messageList.clientHeight	
+		}*/
 
 		let chat = null;
 		let room = null;

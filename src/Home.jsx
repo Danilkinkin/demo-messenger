@@ -53,7 +53,8 @@ class Home extends React.Component {
 		super(props);
 		document.title = "Home";
 
-		this.state = {}
+		this.state = {
+		}
 
 		this.handleMenuToggle = this.handleChatsActivityToggle.bind(this);
 	}
@@ -95,7 +96,7 @@ class Home extends React.Component {
 			          	</Drawer>
 			        </Hidden>
 		      	</nav>
-		      	<main className={classes.content}>
+		      	<main className={classes.content} id="message-list">
 		        	<div className={classes.toolbar} />
 		        	<Chat />
 		      </main>
