@@ -1,9 +1,7 @@
-import { TOGGLE_MENU, TOGGLE_CHANNEL } from "../actionTypes";
-import { CHANNELS } from "../../channels";
+import { TOGGLE_MENU } from "../actionTypes";
 
 const initialState = {
-  isMobile: false,
-  selectedChannel: CHANNELS.ALL
+  isMobile: false
 };
 
 export default function(state = initialState, action) {
@@ -15,15 +13,7 @@ export default function(state = initialState, action) {
         ...initialState,
         isMobile: !state.isMobile
       };
-    }
-    case TOGGLE_CHANNEL: {
-      const { selectedChannel } = action.payload;
-
-      return {
-        ...initialState,
-        selectedChannel: selectedChannel
-      };
-    }
+    }    
     default:
       return state;
   }

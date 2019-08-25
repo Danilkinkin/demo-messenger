@@ -2,7 +2,6 @@ import React from 'react';
 import Chat from './components/Chat.jsx';
 import ChatBar from './components/ChatBar.jsx';
 import ChatsActivity from './components/Chats.jsx';
-import { LoremIpsum } from "lorem-ipsum";
 import PropTypes from 'prop-types';
 import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
@@ -36,6 +35,7 @@ const styles = theme => {
 		},
 		drawerPaper: {
 			maxWidth: drawerWidth,
+			width: "100%"
 		},
 		toolbar: theme.mixins.toolbar,
 		content: {
@@ -46,56 +46,6 @@ const styles = theme => {
 		}
 	}
 };
-
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4
-  }
-});
-
-let dialogs = [
-	{
-		chanel: "Peter I",
-		lastMessage: {
-			autor: "You",
-			text: lorem.generateSentences(5),
-			time: new Date()
-		}
-	},
-	{
-		chanel: "Babai Eban",
-		lastMessage: {
-			autor: "Babai Eban",
-			text: lorem.generateSentences(1),
-			time: new Date()
-		}
-	},
-	{
-		chanel: "Peter I",
-		lastMessage: {
-			autor: "You",
-			text: lorem.generateSentences(10),
-			time: new Date()
-		}
-	},
-	{
-		chanel: "Babai Eban",
-		lastMessage: {
-			autor: "Babai Eban",
-			text: lorem.generateSentences(2),
-			time: new Date()
-		}
-	}
-]
-
-
-
-let selectDialog = null;
 
 class Home extends React.Component {
 	constructor(props){

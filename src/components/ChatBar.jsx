@@ -89,7 +89,7 @@ class ChatBar extends React.Component {
 		          		aria-haspopup="true" 
 		          		onClick={this.handleSelectSourceMenu}
 		          	>
-		          		{this.props.app.selectedChannel}
+		          		{this.props.chat.channelId}
 		          	</Button>
 		          	<Menu
 						id="simple-menu"
@@ -101,25 +101,25 @@ class ChatBar extends React.Component {
 					>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.VK)}
-							selected={this.props.app.selectedChannel === CHANNELS.VK}
+							selected={this.props.chat.channelId === CHANNELS.VK}
 						>
 							VK
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.OK)}
-							selected={this.props.app.selectedChannel === CHANNELS.OK}
+							selected={this.props.chat.channelId === CHANNELS.OK}
 						>
 							OK
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.FB)}
-							selected={this.props.app.selectedChannel === CHANNELS.FB}
+							selected={this.props.chat.channelId === CHANNELS.FB}
 						>
 							FB
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.ALL)}
-							selected={this.props.selectedChannel == CHANNELS.ALL}
+							selected={this.props.chat.channelId == CHANNELS.ALL}
 						>
 							All channels
 						</MenuItem>

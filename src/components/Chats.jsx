@@ -17,6 +17,8 @@ import {
 	Avatar,
 	Typography 
 } from '@material-ui/core';
+import { connect } from "react-redux";
+import { toggleRoom } from "../redux/actions";
 
 const styles = theme => ({
 	root: {
@@ -37,6 +39,17 @@ const styles = theme => ({
 	    flexGrow: 1,
 	    alignItems: "center",
 	    display: "flex"
+	},
+	unreadDialog: {
+		backgroundColor: theme.palette.primary.main,
+		color: theme.palette.getContrastText(theme.palette.primary.main),
+		marginLeft: "auto",
+		float: "right",
+	    padding: "3px 6px",
+	    lineHeight: "16px",
+	    minWidth: "22px",
+	    textAlign: "center",
+	    borderRadius: "11px"
 	}
 });
 
@@ -46,20 +59,20 @@ function MessagePreview(props) {
 	return (
 		<ListItem alignItems="flex-start" button  onClick={props.onClick} selected={props.selected}>
 	        <ListItemAvatar>
-	          <Avatar alt="Remy Sharp" aria-label="recipe">{props.name[0]}</Avatar>
+	          <Avatar alt="Remy Sharp" aria-label="recipe">{props.roomId[0]}</Avatar>
 	        </ListItemAvatar>
 	        <ListItemText
 	          classes={{ primary: classes.headerDialog }}
 	          primary={
 	          	<React.Fragment>
-	          	  {props.name}
+	          	  {props.roomId}
 	              <Typography
 	                component="span"
 	                variant="body2"
 	                className={ classes.timeDialog }
 	                color="textPrimary"
 	              >
-	                {props.message.time.getHours()+":"+props.message.time.getMinutes()}
+	                {props.message.ts.getHours()+":"+props.message.ts.getMinutes()}
 	              </Typography>	              
 	            </React.Fragment>
 	          }
@@ -71,9 +84,20 @@ function MessagePreview(props) {
 	                className={classes.inline}
 	                color="textPrimary"
 	              >
-	                {props.message.autor}
+	              	{props.message.autor}
 	              </Typography>
-	              {" — "+(props.message.text.length > 110? props.message.text.substring(0, 110) + "..." : props.message.text)}
+	              {" — "+(props.message.body.length > 110? props.message.body.substring(0, 110) + "..." : props.message.body)}
+	              {
+	              	props.unread > 0?
+		              	<Typography
+			                component="span"
+			                variant="body2"
+			            	className={classes.unreadDialog}
+			        	>
+			            	{props.unread}
+			            </Typography>
+		            : null
+	              }	              
 	            </React.Fragment>
 	          }
 	        />
@@ -84,22 +108,19 @@ function MessagePreview(props) {
 class Chats extends React.Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			dialogs: props.dialogs
-		}
-		this.handleSelect = props.onSelect;
-		this.onSelect = this.handleSelectDialog.bind(this);
+		this.state = {}
+		this.handleSelectRoom = this.handleSelectRoom.bind(this);
 	}
 
-	handleSelectDialog(e) {
-		if(this.handleSelect) this.handleSelect(e);
+	handleSelectRoom(e) {
+		this.props.toggleRoom(e);
 	}
 
 	render(){
 		const { classes } = this.props;
 
 		let list = null;
-		if(this.state.dialogs.length == 0){
+		if(this.props.chats.timeline.length == 0){
 			list = (
 				<div className={classes.noDialogs}>
 					<Typography variant="subtitle2">
@@ -111,15 +132,16 @@ class Chats extends React.Component {
 			list = (
 				<List className={classes.root}>
 	  			{	
-	  				this.state.dialogs.map((dialog, i) =>
+	  				this.props.chats.timeline.map((roomId, i) =>
 						<React.Fragment key={i}>
 			  				<MessagePreview 
-			  					name={dialog.chanel}
-			  					message={dialog.lastMessage}
-			  					onClick={e => this.onSelect(i)}
-			  					selected={this.state.select === i}
+			  					roomId={roomId}
+			  					message={this.props.chats.rooms[roomId].lastMessage}
+			  					onClick={e => this.handleSelectRoom(roomId)}
+			  					selected={this.props.chat.roomId === roomId}
+			  					unread={this.props.chats.rooms[roomId].unread}
 			  				/>
-			  				{(i != this.state.dialogs.length-1)? <Divider variant="inset" component="li" /> : null}		  			
+			  				{(i != this.props.chats.timeline.length-1)? <Divider variant="inset" component="li" /> : null}		  			
 		  				</React.Fragment>
 					)
 	  			}
@@ -141,4 +163,7 @@ Chats.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Chats);
+export default connect(
+  state => state,
+  { toggleRoom }
+)(withStyles(styles)(Chats));

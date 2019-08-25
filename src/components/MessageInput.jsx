@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import { connect } from "react-redux";
-import { sendMessage } from "../redux/actions";
+import { sendMessage, pushMessage } from "../redux/actions";
 
 const styles = theme => ({
 	root: {
@@ -104,6 +104,9 @@ MessageInput.propTypes = {
 };
 
 export default connect(
-  state => state,
+  state => {
+  	//if(state.message)  
+  	return state;
+  },
   { sendMessage }
 )(withStyles(styles)(MessageInput));
