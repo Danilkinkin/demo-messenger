@@ -19,7 +19,7 @@ const styles = theme => ({
 		maxWidth: 600,
 		margin: "auto",
 		width: "100%",
-		position: "fixed",
+		position: "sticky",
 	    bottom: "8px",
 	    zIndex: 1
 	},

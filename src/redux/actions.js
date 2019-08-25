@@ -23,7 +23,6 @@ export const toggleRoom = roomId => ({
 })
 
 //chats
-
 export const readRoom = roomId => ({
   type: READ_ROOM,
   payload: { roomId }
