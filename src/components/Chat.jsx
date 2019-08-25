@@ -58,6 +58,7 @@ const styles = theme => {
 		    position: 'fixed',
 		    marginBottom: theme.spacing(2),
 			right: theme.spacing(2),
+			zIndex: 100
 		}
 	}
 };
@@ -96,7 +97,7 @@ class Chat extends React.Component {
 	checkUserScroll(){
 		if(!this.state.input) this.state.input = document.getElementById("input-wrp")
 		if(this.state.input) this.state.fabOffset = this.state.input.clientHeight;
-	
+
 		this.setState(this.state);
 	}
 

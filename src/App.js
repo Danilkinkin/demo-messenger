@@ -89,7 +89,7 @@ function emit() {
             ts: new Date(),
         });
     }
-    setTimeout(emit, randomBetween(200, 600));
+    setTimeout(emit, randomBetween(1500, 10000));
 }
 
 function randomBetween(min, max) {
