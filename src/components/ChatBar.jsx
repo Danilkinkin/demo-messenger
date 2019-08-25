@@ -81,7 +81,7 @@ class ChatBar extends React.Component {
 		       			<MenuIcon />
 		          	</IconButton>
 		          	<Typography variant="h6" className={classes.headerTitle}>
-		            	Babai Eban
+		            	{this.props.chat.roomId || "Чат не выбран"}
 		          	</Typography>
 		          	<Button 
 		          		color="inherit"

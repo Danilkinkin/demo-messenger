@@ -18,7 +18,7 @@ import {
 	Typography 
 } from '@material-ui/core';
 import { connect } from "react-redux";
-import { toggleRoom } from "../redux/actions";
+import { toggleRoom, readRoom } from "../redux/actions";
 
 const styles = theme => ({
 	root: {
@@ -114,6 +114,7 @@ class Chats extends React.Component {
 
 	handleSelectRoom(e) {
 		this.props.toggleRoom(e);
+		this.props.readRoom(e);
 	}
 
 	render(){
@@ -165,5 +166,5 @@ Chats.propTypes = {
 
 export default connect(
   state => state,
-  { toggleRoom }
+  { toggleRoom, readRoom }
 )(withStyles(styles)(Chats));

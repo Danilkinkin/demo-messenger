@@ -8,3 +8,4 @@ export const TOGGLE_ROOM = "TOGGLE_ROOM";
 
 //chats
 export const PUSH_MESSAGE = "PUSH_MESSAGE";
+export const READ_ROOM = "READ_ROOM";

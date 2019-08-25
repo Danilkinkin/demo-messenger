@@ -2,7 +2,7 @@ import { SEND_MESSAGE, TOGGLE_CHANNEL, TOGGLE_ROOM } from "../actionTypes";
 import { CHANNELS } from "../../channels";
 
 const initialState = {
-  roomId: "",
+  roomId: null,
   channelId: CHANNELS.ALL
 };
 

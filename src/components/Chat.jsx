@@ -1,6 +1,5 @@
 import React from 'react';
 import MessageInput from './MessageInput.jsx';
-import { LoremIpsum } from "lorem-ipsum";
 import PropTypes from 'prop-types';
 import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
 import {	
@@ -11,6 +10,9 @@ import {
 	ListSubheader,
 	Divider
 } from '@material-ui/core';
+import { connect } from "react-redux";
+import { readRoom } from "../redux/actions";
+import { CHANNELS } from "../channels";
 
 const drawerWidth = 360;
 
@@ -35,18 +37,13 @@ const styles = theme => ({
 		flexGrow: 1,
 	    display: "flex",
 	    flexDirection: "column"
+	},
+	selectDialogHelper: {
+		height: "100%",
+	    display: "flex",
+	    alignItems: "center",
+	    justifyContent: "center"
 	}
-});
-
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4
-  }
 });
 
 class Chat extends React.Component {
@@ -61,34 +58,65 @@ class Chat extends React.Component {
 	render(){
 		const { classes } = this.props;
 
+		let chat = null;
+		let room = null;
+		let messages = null;
+		if(this.props.chat.roomId){
+			room = this.props.chats.rooms[this.props.chat.roomId];
+			messages = room.messages.filter(message => this.props.chat.channelId == CHANNELS.ALL || message.channelId == this.props.chat.channelId);
+		}
+
+		if(this.props.chat.roomId && messages != null && messages.length){
+			messages = messages.map((message, i) => {
+				let divider = null;
+
+				if(
+					this.props.chat.channelId == CHANNELS.ALL &&
+					(
+						i == 0 ||
+						room.messages[i-1].channelId != room.messages[i].channelId
+					)
+				){
+					divider = (
+						<React.Fragment>
+							<Divider />
+						<ListSubheader>{message.channelId}</ListSubheader>
+					</React.Fragment>
+					);
+				}
+
+				return (
+					<React.Fragment key={i}>
+						{divider}
+						<ListItem alignItems="flex-start" className={classes.message+" "+(message.autor == "Me"? classes.myMessage : "")}>
+					        <Typography variant="body2">
+			            	{message.body}
+			          		</Typography>
+						</ListItem>
+					</React.Fragment>
+				);
+			});
+
+			chat = (
+				<React.Fragment>
+					<List className={classes.messages}>
+						{messages}						
+			        </List>
+			        <MessageInput />
+				</React.Fragment>
+			)
+		}else{
+			chat = (
+				<div className={classes.selectDialogHelper}>
+					<Typography variant="subtitle2">
+		            	{messages != null? "Сообщений нет" : "Веберете чат"}
+		        	</Typography>
+	        	</div>
+			)
+		}
+
 		return (
-	  		<Container maxWidth="md" className={classes.root}>
-		        <List className={classes.messages}>
-		        	<ListItem alignItems="flex-start" className={classes.message}>
-				        <Typography variant="body2">
-		            	{lorem.generateSentences(6)}
-		          		</Typography>
-					</ListItem>
-					<ListItem alignItems="flex-start" className={classes.message}>
-				        <Typography variant="body2">
-		            	{lorem.generateWords(6)}
-		          		</Typography>
-					</ListItem>
-					<Divider />
-					<ListSubheader>VK</ListSubheader>
-				    <ListItem alignItems="flex-start" className={classes.message+" "+classes.myMessage}>
-				        <Typography variant="body2">
-		            	{lorem.generateSentences(2)}
-		          		</Typography>
-					</ListItem>
-					<ListItem alignItems="flex-start" className={classes.message}>
-				        <Typography variant="body2">
-		            	{lorem.generateSentences(3)}
-		          		</Typography>
-					</ListItem>
-		        </List>
-		        <MessageInput />
-			</Container>
+	  		<Container maxWidth="md" className={classes.root}>{chat}</Container>
 		);
 	}
 }
@@ -98,4 +126,7 @@ Chat.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Chat);
+export default connect(
+  state => state,
+  { readRoom }
+)(withStyles(styles)(Chat));

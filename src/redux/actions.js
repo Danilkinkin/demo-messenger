@@ -1,4 +1,4 @@
-import { TOGGLE_MENU, TOGGLE_CHANNEL, SEND_MESSAGE, TOGGLE_ROOM } from './actionTypes'
+import { TOGGLE_MENU, TOGGLE_CHANNEL, SEND_MESSAGE, TOGGLE_ROOM, READ_ROOM } from './actionTypes'
 
 //app
 export const toggleMenu = isMobile => ({
@@ -19,5 +19,12 @@ export const sendMessage = message => ({
 
 export const toggleRoom = roomId => ({
   type: TOGGLE_ROOM,
+  payload: { roomId }
+})
+
+//chats
+
+export const readRoom = roomId => ({
+  type: READ_ROOM,
   payload: { roomId }
 })

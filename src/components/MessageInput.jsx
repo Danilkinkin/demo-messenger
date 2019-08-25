@@ -18,7 +18,10 @@ const styles = theme => ({
 		alignItems: 'center',
 		maxWidth: 600,
 		margin: "auto",
-		width: "100%"
+		width: "100%",
+		position: "fixed",
+	    bottom: "8px",
+	    zIndex: 1
 	},
 	input: {
 		marginLeft: theme.spacing(1),

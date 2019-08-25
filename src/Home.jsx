@@ -42,7 +42,8 @@ const styles = theme => {
 			flexGrow: 1,
 			padding: theme.spacing(3),
 			display: "flex",
-	    	flexDirection: "column"
+	    	flexDirection: "column",
+	    	position: "relative"
 		}
 	}
 };
