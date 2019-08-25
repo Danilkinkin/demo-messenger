@@ -13,6 +13,7 @@ import {
 import { connect } from "react-redux";
 import { readRoom } from "../redux/actions";
 import { CHANNELS } from "../channels";
+import dataApp from "../dataApp.js";
 
 const drawerWidth = 360;
 
@@ -62,7 +63,7 @@ class Chat extends React.Component {
 		let room = null;
 		let messages = null;
 		if(this.props.chat.roomId){
-			room = this.props.chats.rooms[this.props.chat.roomId];
+			room = dataApp.rooms[this.props.chat.roomId];
 			messages = room.messages.filter(message => this.props.chat.channelId == CHANNELS.ALL || message.channelId == this.props.chat.channelId);
 		}
 

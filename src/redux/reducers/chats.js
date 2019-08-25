@@ -1,5 +1,7 @@
 import { PUSH_MESSAGE, READ_ROOM } from "../actionTypes";
 import store from "../store";
+import { CHANNELS } from "../../channels";
+import dataApp from "../../dataApp.js";
 
 const initialState = {
   rooms: {},
@@ -32,12 +34,30 @@ export default function(state = initialState, action) {
 
         if(findIndex != -1) initialState.timeline.splice(findIndex, 1);
 
+
         initialState.timeline.unshift(message.roomId);
       }
 
-      initialState.rooms[message.roomId].unread += 1;
+      if(dataApp.selectRoomId != null && initialState.timeline[0] != dataApp.selectRoomId){
+        let findIndex = initialState.timeline.findIndex(roomId => roomId === dataApp.selectRoomId);
 
-      initialState.rooms[message.roomId].lastMessage = initialState.rooms[message.roomId].messages[initialState.rooms[message.roomId].messages.length-1]
+        if(findIndex != -1) initialState.timeline.splice(findIndex, 1);
+
+        initialState.timeline.unshift(dataApp.selectRoomId);
+      }
+
+      initialState.rooms[message.roomId].lastMessage = initialState.rooms[message.roomId].messages[initialState.rooms[message.roomId].messages.length-1];
+
+      dataApp.rooms = initialState.rooms;
+      dataApp.roomsTimeline = initialState.timeline;
+
+      if(
+        dataApp.selectRoomId != message.roomId ||
+        dataApp.selectChannelId != initialState.rooms[message.roomId].lastMessage.channelId &&
+        dataApp.selectChannelId != CHANNELS.ALL
+      ){
+        initialState.rooms[message.roomId].unread += 1;
+      }
       
       return {
         ...initialState
@@ -53,6 +73,8 @@ export default function(state = initialState, action) {
 
         initialState.timeline.unshift(roomId);
       }
+
+      dataApp.selectRoomId = roomId;
 
       initialState.rooms[roomId].unread = 0;
       

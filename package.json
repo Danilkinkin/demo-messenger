@@ -15,6 +15,7 @@
     "@material-ui/icons": "^4.2.1",
     "@material-ui/styles": "^4.3.3",
     "@material-ui/system": "^4.3.3",
+    "dexie": "^2.0.4",
     "express": "^4.17.1",
     "lorem-ipsum": "^2.0.3",
     "razzle": "^3.0.0",

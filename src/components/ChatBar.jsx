@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { connect } from "react-redux";
-import { toggleMenu, toggleChannel } from "../redux/actions";
+import { toggleMenu, toggleChannel, readRoom } from "../redux/actions";
 import { CHANNELS } from "../channels";
 
 const drawerWidth = 360;
@@ -58,7 +58,10 @@ class ChatBar extends React.Component {
 	handleSelectSource(e) {
 		this.state.anchorEl = null;
 		this.setState(this.state);
-		if(e) this.props.toggleChannel(e);
+		if(e){
+			this.props.toggleChannel(e);
+			this.props.readRoom(this.props.chat.roomId);
+		}
 	}
 
 	handleMenuToggle() {
@@ -137,5 +140,5 @@ ChatBar.propTypes = {
 
 export default connect(
   state => state,
-  { toggleMenu, toggleChannel }
+  { toggleMenu, toggleChannel, readRoom }
 )(withStyles(styles)(ChatBar));
