@@ -52,10 +52,7 @@ class Home extends React.Component {
 		super(props);
 		document.title = "Home";
 
-		this.state = {
-			dialogs: dialogs,
-			selectDialog: null
-		}
+		this.state = {}
 
 		this.handleMenuToggle = this.handleChatsActivityToggle.bind(this);
 	}
@@ -84,7 +81,7 @@ class Home extends React.Component {
 				            className={classes.mobileMenu}
 				            ModalProps={{keepMounted: true}}
 				        >
-			            	{<ChatsActivity dialogs={this.state.dialogs}/>}
+			            	{<ChatsActivity/>}
 			        	</Drawer>
 			        </Hidden>
 			        <Hidden smDown implementation="css">
@@ -93,7 +90,7 @@ class Home extends React.Component {
 				            variant="permanent"
 				            open
 			        	>
-			            	{<ChatsActivity dialogs={this.state.dialogs}/>}
+			            	{<ChatsActivity/>}
 			          	</Drawer>
 			        </Hidden>
 		      	</nav>
