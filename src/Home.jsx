@@ -54,6 +54,7 @@ class Home extends React.Component {
 		document.title = "Home";
 
 		this.state = {
+
 		}
 
 		this.handleMenuToggle = this.handleChatsActivityToggle.bind(this);

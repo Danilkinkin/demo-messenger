@@ -8,46 +8,63 @@ import {
 	ListItem,
 	Typography,
 	ListSubheader,
-	Divider
+	Divider,
+	Fab,
+	Zoom
 } from '@material-ui/core';
 import { connect } from "react-redux";
 import { readRoom } from "../redux/actions";
 import { CHANNELS } from "../channels";
 import dataApp from "../dataApp.js";
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 const drawerWidth = 360;
 
-const styles = theme => ({
-	messages: {
-		flexGrow: 1
-	},
-	message: {
-		borderRadius: "18px",
-	    backgroundColor: theme.palette.grey[300],
-	    color: "#282828",
-	    marginBottom: "15px",
-    	width: "fit-content",
-    	maxWidth: "90%"
-	},
-	messageText: {
-		whiteSpace: "pre-wrap"
-	},
-	myMessage: {
-		marginLeft: "auto",
-	    backgroundColor: theme.palette.primary.main,
-	    color: "#fff"
-	},
-	root: {
-		flexGrow: 1,
-	    display: "flex",
-	    flexDirection: "column"
-	},
-	selectDialogHelper: {
-		height: "100%",
-	    display: "flex",
-	    alignItems: "center",
-	    justifyContent: "center"
+const styles = theme => {
+	transitionDuration = transitionDuration(theme);
+	console.log(transitionDuration)
+	return {
+		messages: {
+			flexGrow: 1
+		},
+		message: {
+			borderRadius: "18px",
+		    backgroundColor: theme.palette.grey[300],
+		    color: "#282828",
+		    marginBottom: "15px",
+	    	width: "fit-content",
+	    	maxWidth: "90%"
+		},
+		messageText: {
+			whiteSpace: "pre-wrap"
+		},
+		myMessage: {
+			marginLeft: "auto",
+		    backgroundColor: theme.palette.primary.main,
+		    color: "#fff"
+		},
+		root: {
+			flexGrow: 1,
+		    display: "flex",
+		    flexDirection: "column"
+		},
+		selectDialogHelper: {
+			height: "100%",
+		    display: "flex",
+		    alignItems: "center",
+		    justifyContent: "center"
+		},
+		fab: {
+		    position: 'fixed',
+		    marginBottom: theme.spacing(2),
+			right: theme.spacing(2),
+		}
 	}
+};
+
+let transitionDuration = theme => ({
+	enter: theme.transitions.duration.enteringScreen,
+	exit: theme.transitions.duration.leavingScreen,
 });
 
 class Chat extends React.Component {
@@ -56,26 +73,43 @@ class Chat extends React.Component {
 
 		this.state = {			
 			userScroll: false,
-			messageList: document.getElementById("message-list")
-		}		
+			messageList: null,
+			input: null,
+			fabOffset: 0
+		}
+
+		this.checkUserScroll = this.checkUserScroll.bind(this);	
+		this.scrollToBottom = this.scrollToBottom.bind(this);
 	}
 
 	componentDidMount(){
-		this.state.messageList = document.getElementById("message-list")
+		this.state.messageList = document.getElementById("message-list");
+		//this.state.input = document.getElementById("input-wrp");
+		//this.checkUserScroll();
 	}
 
 	componentDidUpdate(){
-		//if(this.state.userScroll && this.state.messageList) this.state.messageList.lastChild.scrollIntoView(false);
+		//if(!this.state.userScroll && this.state.messageList) this.state.messageList.lastChild.scrollIntoView(false);
+		if(!this.state.userScroll && this.state.messageList) this.state.messageList.lastChild.scrollIntoView(false);
+	}
+
+	checkUserScroll(){
+		if(!this.state.input) this.state.input = document.getElementById("input-wrp")
+		if(this.state.input) this.state.fabOffset = this.state.input.clientHeight;
+	
+		this.setState(this.state);
+	}
+
+	scrollToBottom(){
+		this.state.userScroll = false;
+		if(this.state.messageList) this.state.messageList.lastChild.scrollIntoView(false);
+		this.setState(this.state);
 	}
 
 	render(){
 		const { classes } = this.props;
 
-		/*if(this.state.messageList){
-			console.log(this.state.messageList.scrollTop , this.state.messageList.scrollHeight - this.state.messageList.clientHeight)
-
-			this.state.userScroll = this.state.messageList.scrollTop != this.state.messageList.scrollHeight - this.state.messageList.clientHeight	
-		}*/
+		this.state.userScroll = document.documentElement.scrollTop != document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
 		let chat = null;
 		let room = null;
@@ -121,7 +155,22 @@ class Chat extends React.Component {
 					<List className={classes.messages}>
 						{messages}						
 			        </List>
-			        <MessageInput />
+			        <MessageInput onChange={this.checkUserScroll}/>
+			        <Zoom
+						key="primary"
+						in={this.state.userScroll}
+						timeout={transitionDuration}
+						style={{
+							transitionDelay: `${this.state.userScroll ? transitionDuration.exit : 0}ms`,
+						}}
+						unmountOnExit
+					>
+						<Fab aria-label="Вниз" className={classes.fab} style={{
+							bottom: this.state.fabOffset+"px"
+						}} color="primary" onClick={this.scrollToBottom}>
+							<ArrowDownwardIcon />
+						</Fab>
+					</Zoom>
 				</React.Fragment>
 			)
 		}else{

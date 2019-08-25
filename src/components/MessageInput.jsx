@@ -81,9 +81,18 @@ class MessageInput extends React.Component {
 		this.setState(this.state);
 	}
 
+	componentDidMount(){
+		if(this.props.onChange) this.props.onChange();
+	}
+
+	componentDidUpdate(){
+		if(this.props.onChange) this.props.onChange();
+	}
+
 	handlePrintMessage(e) {
 		this.state.message = e.target.value;
 		this.setState(this.state);
+		//if(this.props.onChange) this.props.onChange();
 	}
 
 	handleCtrlEnter(e) {
@@ -96,7 +105,7 @@ class MessageInput extends React.Component {
 		let helperHidden = this.state.message.length > 0? "" : classes.hidden;
 
 		return (
-	  		<Paper className={classes.root}>
+	  		<Paper className={classes.root} id="input-wrp">
 				<InputBase
 					className={classes.input}
 					placeholder="Введите сообщение"
