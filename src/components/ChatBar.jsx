@@ -8,12 +8,14 @@ import {
 	Typography,
 	Button,
 	Menu,
-	MenuItem
+	MenuItem,
+	Badge
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { connect } from "react-redux";
 import { toggleMenu, toggleChannel, readRoom } from "../redux/actions";
 import { CHANNELS } from "../channels";
+import dataApp from "../dataApp.js";
 
 const drawerWidth = 360;
 
@@ -81,7 +83,9 @@ class ChatBar extends React.Component {
 			            onClick={this.handleMenuToggle}
 			            className={classes.menuButton}
 			    	>
-		       			<MenuIcon />
+			    		<Badge badgeContent={dataApp.unreadMessages} color="secondary">
+		       				<MenuIcon />
+		       			</Badge>
 		          	</IconButton>
 		          	<Typography variant="h6" className={classes.headerTitle}>
 		            	{this.props.chat.roomId || "Чат не выбран"}
@@ -106,19 +110,25 @@ class ChatBar extends React.Component {
 							onClick={e => this.handleSelectSource(CHANNELS.VK)}
 							selected={this.props.chat.channelId === CHANNELS.VK}
 						>
-							VK
+							<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.VK] : null} color="secondary">
+								VK
+							</Badge>
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.OK)}
 							selected={this.props.chat.channelId === CHANNELS.OK}
 						>
-							OK
+							<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.OK] : null} color="secondary">
+								OK
+							</Badge>
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.FB)}
 							selected={this.props.chat.channelId === CHANNELS.FB}
 						>
-							FB
+							<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.FB] : null} color="secondary">
+								VK
+							</Badge>
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.ALL)}

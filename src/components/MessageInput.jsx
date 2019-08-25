@@ -9,7 +9,8 @@ import {
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import { connect } from "react-redux";
-import { sendMessage, pushMessage } from "../redux/actions";
+import { sendMessage, pushMessage, readRoom } from "../redux/actions";
+import dataApp from "../dataApp.js";
 
 const styles = theme => ({
 	root: {
@@ -59,9 +60,24 @@ class MessageInput extends React.Component {
 	}
 
 	handleSendMessage() {
-		this.props.sendMessage(this.state.message);
-		this.state.message = "";
-		document.getElementById("input-message").value = "";
+		let text = this.state.message;
+		text = text
+			.replace(/<+/g, "&lt;")
+			.replace(/>+/g, "&gt;")
+			.replace(/\r?\n{2,}/g, "<br>\n")
+			.replace(/\r?\n/g, "<br>")
+			.replace(/\s+/g," ");
+
+		while(text.indexOf("<br>") == 0) text = text.substring(4);
+		while(~text.lastIndexOf("<br>") && text.length-4 == text.lastIndexOf("<br>")) text = text.substring(0, text.length-4);
+
+		text = text.replace(/<br>/g, "\n");
+
+		if(text == "") return;
+
+		this.props.sendMessage(text);
+		this.props.readRoom(dataApp.selectRoomId);
+		document.getElementById("input-message").value = this.state.message = ""
 		this.setState(this.state);
 	}
 
@@ -71,7 +87,7 @@ class MessageInput extends React.Component {
 	}
 
 	handleCtrlEnter(e) {
-		if(e.ctrlKey && e.keyCode == 13) this.handleSendMessage();
+		if(e.keyCode == 13 && e.ctrlKey) this.handleSendMessage();
 	}
 
 	render(){
@@ -111,5 +127,5 @@ export default connect(
   	//if(state.message)  
   	return state;
   },
-  { sendMessage }
+  { sendMessage, readRoom }
 )(withStyles(styles)(MessageInput));

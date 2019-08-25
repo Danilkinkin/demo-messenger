@@ -18,7 +18,12 @@ export default function(state = initialState, action) {
           roomId: message.roomId,
           messages: [],
           lastMessage: null,
-          unread: 0
+          unread: {
+            [CHANNELS.VK]: 0,
+            [CHANNELS.OK]: 0,
+            [CHANNELS.FB]: 0,
+            [CHANNELS.ALL]: 0
+          }
         };
       }
 
@@ -51,12 +56,28 @@ export default function(state = initialState, action) {
       dataApp.rooms = initialState.rooms;
       dataApp.roomsTimeline = initialState.timeline;
 
+      /*if(dataApp.selectRoomId == message.roomId){
+        console.log(dataApp.selectRoomId != message.roomId ,
+        dataApp.selectChannelId != initialState.rooms[message.roomId].lastMessage.channelId &&
+        dataApp.selectChannelId != CHANNELS.ALL)
+
+        if(
+          dataApp.selectRoomId != message.roomId ||
+          dataApp.selectChannelId != initialState.rooms[message.roomId].lastMessage.channelId &&
+          dataApp.selectChannelId != CHANNELS.ALL
+        ){
+          console.log("NEW UNREAD", initialState.rooms[message.roomId].unread)
+        }
+      }*/
+
       if(
         dataApp.selectRoomId != message.roomId ||
         dataApp.selectChannelId != initialState.rooms[message.roomId].lastMessage.channelId &&
         dataApp.selectChannelId != CHANNELS.ALL
       ){
-        initialState.rooms[message.roomId].unread += 1;
+        initialState.rooms[message.roomId].unread[initialState.rooms[message.roomId].lastMessage.channelId] += 1;
+        initialState.rooms[message.roomId].unread[CHANNELS.ALL] += 1;
+        dataApp.unreadMessages += 1;
       }
       
       return {
@@ -76,7 +97,18 @@ export default function(state = initialState, action) {
 
       dataApp.selectRoomId = roomId;
 
-      initialState.rooms[roomId].unread = 0;
+      if(dataApp.selectChannelId == CHANNELS.ALL){
+        console.log(initialState.rooms[roomId].unread[CHANNELS.ALL])
+        dataApp.unreadMessages -= initialState.rooms[roomId].unread[CHANNELS.ALL];
+        for(var channel in initialState.rooms[roomId].unread){
+          initialState.rooms[roomId].unread[channel] = 0;
+        }
+      }else{
+        initialState.rooms[roomId].unread[CHANNELS.ALL] -= initialState.rooms[roomId].unread[dataApp.selectChannelId];
+        console.log(initialState.rooms[roomId].unread[dataApp.selectChannelId])
+        dataApp.unreadMessages -= initialState.rooms[roomId].unread[dataApp.selectChannelId];
+        initialState.rooms[roomId].unread[dataApp.selectChannelId] = 0;
+      }
       
       return {
         ...initialState

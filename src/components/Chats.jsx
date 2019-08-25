@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core';
 import { connect } from "react-redux";
 import { toggleRoom, readRoom, toggleMenu } from "../redux/actions";
+import { CHANNELS } from "../channels";
 
 const styles = theme => ({
 	root: {
@@ -88,13 +89,13 @@ function MessagePreview(props) {
 	              </Typography>
 	              {" — "+(props.message.body.length > 110? props.message.body.substring(0, 110) + "..." : props.message.body)}
 	              {
-	              	props.unread > 0?
+	              	props.unread[CHANNELS.ALL] > 0?
 		              	<Typography
 			                component="span"
 			                variant="body2"
 			            	className={classes.unreadDialog}
 			        	>
-			            	{props.unread}
+			            	{props.unread[CHANNELS.ALL]}
 			            </Typography>
 		            : null
 	              }	              

@@ -9,6 +9,7 @@ import store from "./redux/store";
 const loremIpsum = require('lorem-ipsum').loremIpsum;
 import { useDispatch } from 'react-redux';
 import Dexie from 'dexie';
+import dataApp from "./dataApp.js";
 
 
 const styles = theme => ({
@@ -20,6 +21,8 @@ const styles = theme => ({
     height: "100%"
   }
 });
+
+console.log(dataApp.unreadMessages)
 
 class App extends React.Component{
 	constructor(props){
@@ -70,7 +73,7 @@ function emit() {
             ts: new Date(),
         });
     }
-    setTimeout(emit, randomBetween(2000, 6000));
+    setTimeout(emit, randomBetween(200, 600));
 }
 
 function randomBetween(min, max) {

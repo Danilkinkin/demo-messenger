@@ -29,6 +29,9 @@ const styles = theme => ({
     	width: "fit-content",
     	maxWidth: "90%"
 	},
+	messageText: {
+		whiteSpace: "pre-wrap"
+	},
 	myMessage: {
 		marginLeft: "auto",
 	    backgroundColor: theme.palette.primary.main,
@@ -90,7 +93,7 @@ class Chat extends React.Component {
 					<React.Fragment key={i}>
 						{divider}
 						<ListItem alignItems="flex-start" className={classes.message+" "+(message.autor == "Me"? classes.myMessage : "")}>
-					        <Typography variant="body2">
+					        <Typography variant="body2" className={classes.messageText}>
 			            	{message.body}
 			          		</Typography>
 						</ListItem>
