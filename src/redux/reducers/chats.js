@@ -60,7 +60,7 @@ export default function(state = initialState, action) {
     }
     case READ_ROOM: {
       const { roomId } = action.payload;
-      
+
       return {
         ...state,
         rooms: {
@@ -127,14 +127,14 @@ export default function(state = initialState, action) {
                     ...state.rooms[state.roomId].messages,
                     {   
                         autor: "Me",
-                        channelId: state.rooms[state.roomId].lastMessage.channelId,
+                        channelId: state.channelId === CHANNELS.ALL? state.rooms[state.roomId].lastMessage.channelId : state.channelId,
                         body: message,
                         ts: new Date()
                     }
                 ],
                 lastMessage: {
                     autor: "Me",
-                    channelId: state.rooms[state.roomId].lastMessage.channelId,
+                    channelId: state.channelId === CHANNELS.ALL? state.rooms[state.roomId].lastMessage.channelId : state.channelId,
                     body: message,
                     ts: new Date()
                 }
