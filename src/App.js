@@ -3,7 +3,7 @@ import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
 
 import { Provider } from "react-redux";
-//import openSocket from 'socket.io-client'
+import openSocket from 'socket.io-client'
 import store from "./redux/store";
 const loremIpsum = require('lorem-ipsum').loremIpsum;
 
@@ -51,14 +51,18 @@ class App extends React.Component{
 	}
 
 	componentDidMount(){
+		
+		//Генерация сообщений с сервара
+
 		/*socket.on("on_message", data => {
 			data.ts = new Date(data.ts);
 			store.dispatch({type:"PUSH_MESSAGE", payload:data})
 		})*/
+
+		//Эмуляция сообщений с сервара
 		emit();
 
 		function emit() {
-		  //const dispatch = useDispatch()
 		      if (init) {
 		          init = false;
 		      } else {

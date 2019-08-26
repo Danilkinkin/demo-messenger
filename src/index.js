@@ -5,7 +5,7 @@ let app = require('./server').default;
 
 const server = http.createServer(app);
 
-//const io = require('socket.io')(server)
+const io = require('socket.io')(server)
 
 let currentApp = app;
 
@@ -40,7 +40,7 @@ if (module.hot) {
 }
 
 
-/*
+
 
 io.on('connection', client => { 
 
@@ -49,7 +49,6 @@ io.on('connection', client => {
   emit();
 
   function emit() {
-  //const dispatch = useDispatch()
       if (init) {
           init = false;
       } else {
@@ -84,4 +83,4 @@ function randomBetween(min, max) {
 
 function randomChoose(array) {
     return array[randomBetween(0, array.length - 1)];
-}*/
+}
