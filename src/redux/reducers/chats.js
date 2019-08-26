@@ -60,7 +60,7 @@ export default function(state = initialState, action) {
     }
     case READ_ROOM: {
       const { roomId } = action.payload;
-      console.log(state.unread, state.rooms[roomId].unread[state.channelId])
+      
       return {
         ...state,
         rooms: {

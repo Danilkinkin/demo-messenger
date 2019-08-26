@@ -65,7 +65,7 @@ class Home extends React.Component {
 	render(){
 		const { classes } = this.props;
 
-		console.log(this.props)
+		//console.log(this.props)
 
 		if(this.props.chats.unread > 0) document.title = "Новых сообщений: " + this.props.chats.unread;
 		else document.title = "Чаты";
