@@ -60,6 +60,7 @@ class MessageInput extends React.Component {
 
 	handleSendMessage() {
 		let text = this.state.message;
+		// FIXME Meaningless XSS attack prevention. React takes it on itself.
 		text = text
 			.replace(/<+/g, "&lt;")
 			.replace(/>+/g, "&gt;")
@@ -70,12 +71,15 @@ class MessageInput extends React.Component {
 		while(text.indexOf("<br>") == 0) text = text.substring(4);
 		while(~text.lastIndexOf("<br>") && text.length-4 == text.lastIndexOf("<br>")) text = text.substring(0, text.length-4);
 
+		// FIXME Meaningless replaces
 		text = text.replace(/<br>/g, "\n");
 
 		if(text == "") return;
 
 		this.props.sendMessage(text);
 		this.props.readRoom(this.props.chats.roomId);
+		// FIXME This is unacceptable in React.
+		//  https://ru.reactjs.org/docs/forms.html
 		document.getElementById("input-message").value = this.state.message = ""
 		this.setState(this.state);
 	}
@@ -132,7 +136,7 @@ MessageInput.propTypes = {
 
 export default connect(
   state => {
-  	//if(state.message)  
+  	//if(state.message)
   	return state;
   },
   { sendMessage, readRoom }

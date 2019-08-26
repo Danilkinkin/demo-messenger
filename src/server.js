@@ -14,7 +14,8 @@ server
     const context = {};
     const markup = renderToString(
       <StaticRouter context={context} location={req.url}>
-        
+          {/* FIXME WTF? Where is App? */}
+          {/* curl localhost:3000 prints empty document */}
       </StaticRouter>
     );
 

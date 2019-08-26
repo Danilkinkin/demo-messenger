@@ -16,6 +16,7 @@ import deepPurple from '@material-ui/core/colors/deepPurple';
 
 import Home from './Home.jsx';
 
+// FIXME CRITICAL Global variables are prohibited to use with SSR.
 let init = true;
 let id = 0;
 const roomIds = ['Rick Sanchez', 'Morty Smith', 'Dipper Pines', 'Mabel Pines', 'Spongebob Squarepants'];
@@ -51,7 +52,7 @@ class App extends React.Component{
 	}
 
 	componentDidMount(){
-		
+
 		//Генерация сообщений с сервара
 
 		/*socket.on("on_message", data => {
@@ -78,15 +79,17 @@ class App extends React.Component{
 		              ts: new Date(),
 		          });
 		      }
+		      // FIXME Timeouts must be cleared according to React component lifecycle.
+			  //  CRITICAL There is a memory leak: sometimes messages appear much more frequently than expected.
 		      setTimeout(emit, randomBetween(1500, 4000));
-		}  
+		}
 
 		function handle(message) {
 			store.dispatch({type:"PUSH_MESSAGE", payload:message})
 		}
 	}
 
-	render(){		
+	render(){
 		const { classes } = this.props;
 
 		document.body.className = classes.body;

@@ -41,8 +41,8 @@ if (module.hot) {
 
 
 
-
-io.on('connection', client => { 
+// FIXME Wtf?
+io.on('connection', client => {
 
   let timeoutId = null;
 
@@ -65,7 +65,7 @@ io.on('connection', client => {
           });
       }
       timeoutId = setTimeout(emit, randomBetween(2500, 10000));
-  }  
+  }
 
   function handle(message) {
       client.broadcast.emit("on_message", message)

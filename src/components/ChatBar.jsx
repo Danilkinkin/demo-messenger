@@ -48,6 +48,7 @@ class ChatBar extends React.Component {
 			anchorEl: null
 		};
 
+		// FIXME There is a better way to bind methods: autobind-decorator
 		this.handleSelectSourceMenu = this.handleSelectSourceMenu.bind(this);
 		this.handleSelectSource = this.handleSelectSource.bind(this);
 		this.handleMenuToggle = this.handleMenuToggle.bind(this);
@@ -90,11 +91,12 @@ class ChatBar extends React.Component {
 		          	<Typography variant="h6" className={classes.headerTitle}>
 		            	{this.props.chats.roomId || "Чат не выбран"}
 		          	</Typography>
+					{/* FIXME Such things like unread messages must be precomputed in Redux reducer */}
 		          	<Badge badgeContent={this.props.chats.roomId? this.props.chats.rooms[this.props.chats.roomId].unread[CHANNELS.ALL] : null} color="secondary">
-						<Button 
+						<Button
 			          		color="inherit"
-			          		aria-controls="simple-menu" 
-			          		aria-haspopup="true" 
+			          		aria-controls="simple-menu"
+			          		aria-haspopup="true"
 			          		onClick={this.handleSelectSourceMenu}
 			          	>
 			          		{this.props.chats.channelId}
@@ -106,10 +108,11 @@ class ChatBar extends React.Component {
 						keepMounted
 						open={Boolean(this.state.anchorEl)}
 						onClose={e => this.handleSelectSource()}
-						
+
 					>
+						{/* FIXME Seems like loop should be here? */}
 						<MenuItem
-							onClick={e => this.handleSelectSource(CHANNELS.VK)}
+							onClick={e => this.handleSelectSource(CHANNELS.VK) /* FIXME Too much objects are being constructed during render. Arrow functions must be precomputed. */ }
 							selected={this.props.chats.channelId === CHANNELS.VK}
 						>
 							<Badge

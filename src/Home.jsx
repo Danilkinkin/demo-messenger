@@ -53,6 +53,9 @@ const styles = theme => ({
 class Home extends React.Component {
 	constructor(props){
 		super(props);
+		// FIXME Document head must be set in a React way.
+		//  https://github.com/nfl/react-helmet
+		//  https://github.com/tizmagik/react-head
 		document.title = "Чаты";
 
 		this.handleMenuToggle = this.handleChatsActivityToggle.bind(this);
@@ -67,9 +70,12 @@ class Home extends React.Component {
 
 		//console.log(this.props)
 
+		// FIXME Effects must be placed in a proper place
+		//  https://ru.reactjs.org/docs/hooks-effect.html
 		if(this.props.chats.unread > 0) document.title = "Новых сообщений: " + this.props.chats.unread;
 		else document.title = "Чаты";
 
+		// FIXME This should be described in layout, not in such imperative way
 		if(isWidthUp('md', this.props.width) && this.props.app.isMobile) this.props.toggleMenu();
 
 		return (

@@ -15,7 +15,7 @@ import {
 	ListItemText,
 	ListItemAvatar,
 	Avatar,
-	Typography 
+	Typography
 } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
@@ -60,6 +60,8 @@ const styles = theme => ({
 	}
 });
 
+
+// FIXME Must lay at separate file.
 function MessagePreview(props) {
 	const classes = makeStyles(styles)();
 
@@ -80,7 +82,7 @@ function MessagePreview(props) {
 	                color="textPrimary"
 	              >
 	                {preferTime(props.message.ts)}
-	              </Typography>	              
+	              </Typography>
 	            </React.Fragment>
 	          }
 	          secondary={
@@ -93,6 +95,7 @@ function MessagePreview(props) {
 	              	>
 	              		{props.message.autor}
 	              	</Typography>
+					{/* FIXME Magical number */}
 	              	{" — "+(props.message.body.length > 110? props.message.body.substring(0, 110) + "..." : props.message.body)}
 		        	{
 		            	props.unread[CHANNELS.ALL] > 0?
@@ -104,7 +107,7 @@ function MessagePreview(props) {
 				            	{props.unread[CHANNELS.ALL]}
 				            </Typography>
 			            : null
-		        	}	              
+		        	}
 	            </React.Fragment>
 	          }
 	        />
@@ -126,8 +129,12 @@ class Chats extends React.Component {
 
 	render(){
 		const { classes } = this.props;
+		// FIXME It probably would be better if this.props was destructured here.
+		//  https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
 
 		let list = null;
+		// FIXME Why not ternary operator?
+		// FIXME Strict equality should be used instead.
 		if(this.props.chats.timeline.length == 0){
 			list = (
 				<div className={classes.noDialogs}>
@@ -139,17 +146,18 @@ class Chats extends React.Component {
 		}else{
 			list = (
 				<List className={classes.root}>
-	  			{	
+	  			{
 	  				this.props.chats.timeline.map((roomId, i) =>
 						<React.Fragment key={i}>
-			  				<MessagePreview 
+			  				<MessagePreview
 			  					roomId={roomId}
 			  					message={this.props.chats.rooms[roomId].lastMessage}
 			  					onClick={e => this.handleSelectRoom(roomId)}
 			  					selected={this.props.chats.roomId === roomId}
 			  					unread={this.props.chats.rooms[roomId].unread}
 			  				/>
-			  				{(i != this.props.chats.timeline.length-1)? <Divider variant="inset" component="li" /> : null}		  			
+							{/* FIXME Strict equality should be used instead. */}
+			  				{(i != this.props.chats.timeline.length-1)? <Divider variant="inset" component="li" /> : null}
 		  				</React.Fragment>
 					)
 	  			}

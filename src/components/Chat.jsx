@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { readRoom } from "../redux/actions";
 import { CHANNELS } from "../channels";
 
-import {	
+import {
 	Container,
 	List,
 	ListItem,
@@ -27,6 +27,7 @@ import { preferTime } from "../App.js";
 const drawerWidth = 360;
 
 const styles = theme => {
+	// FIXME Global variables are not allowed because SSR is enabled
 	transitionDuration = transitionDuration(theme);
 
 	return {
@@ -86,29 +87,36 @@ class Chat extends React.Component {
 	constructor(props){
 		super(props);
 
-		this.state = {			
+		this.state = {
 			userScroll: false,
 			messageList: null,
 			input: null,
 			fabOffset: 0
 		}
 
-		this.checkUserScroll = this.checkUserScroll.bind(this);	
+		this.checkUserScroll = this.checkUserScroll.bind(this);
 		this.scrollToBottom = this.scrollToBottom.bind(this);
 	}
 
 	componentDidMount(){
+		// FIXME It's not allowed to access DOM directly. React refs must be used instead
+		//  CRITICAL It's not allowed to mutate state directly. setState must be used instead.
+		//  https://ru.reactjs.org/docs/state-and-lifecycle.html#do-not-modify-state-directly
 		this.state.messageList = document.getElementById("message-list");
 	}
 
 	componentDidUpdate(){
+		// FIXME State to state transition must be done by setState with callback.
 		if(!this.state.userScroll && this.state.messageList) this.state.messageList.lastChild.scrollIntoView(false);
 	}
 
 	checkUserScroll(){
+		// FIXME It's not allowed to access DOM directly. React refs must be used instead
+		//  https://ru.reactjs.org/docs/refs-and-the-dom.html
 		if(!this.state.input) this.state.input = document.getElementById("input-wrp")
 		if(this.state.input) this.state.fabOffset = this.state.input.clientHeight;
 
+		// FIXME Wtf?
 		this.setState(this.state);
 	}
 
@@ -121,20 +129,24 @@ class Chat extends React.Component {
 	render(){
 		const { classes } = this.props;
 
+		// FIXME render must be a pure function.
 		this.state.userScroll = document.documentElement.scrollTop != document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
 		let chat = null;
 		let room = null;
 		let messages = null;
 		if(this.props.chats.roomId){
+			// FIXME App state relative computations should be done through Redux. It's its main use case.
 			room = this.props.chats.rooms[this.props.chats.roomId];
 			messages = room.messages.filter(message => this.props.chats.channelId == CHANNELS.ALL || message.channelId == this.props.chats.channelId);
 		}
 
 		if(this.props.chats.roomId && messages != null && messages.length){
+			// FIXME This should be a separate component.
 			messages = messages.map((message, i) => {
 				let divider = null;
 
+				// FIXME Why not ternary operator?
 				if(
 					this.props.chats.channelId == CHANNELS.ALL &&
 					(
@@ -153,6 +165,7 @@ class Chat extends React.Component {
 				return (
 					<React.Fragment key={i}>
 						{divider}
+						{/* FIXME classnames library should be used to concat class names */}
 						<ListItem alignItems="flex-start" className={classes.message+" "+(message.autor == "Me"? classes.myMessage : "")}>
 					        <Typography variant="body2" className={classes.messageText}>
 				            	{message.body}
@@ -165,10 +178,11 @@ class Chat extends React.Component {
 				);
 			});
 
+			// FIXME This should be a separate component.
 			chat = (
 				<React.Fragment>
 					<List className={classes.messages}>
-						{messages}						
+						{messages}
 			        </List>
 			        <MessageInput onChange={this.checkUserScroll}/>
 			        <Zoom
