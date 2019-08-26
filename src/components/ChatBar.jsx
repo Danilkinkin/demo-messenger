@@ -1,6 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
+
+import { connect } from "react-redux";
+import { toggleMenu, readChannel } from "../redux/actions";
+import { CHANNELS } from "../channels";
+
 import {
 	AppBar,
 	Toolbar,
@@ -12,10 +15,10 @@ import {
 	Badge
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { connect } from "react-redux";
-import { toggleMenu, toggleChannel, readRoom } from "../redux/actions";
-import { CHANNELS } from "../channels";
-import dataApp from "../dataApp.js";
+
+import PropTypes from 'prop-types';
+import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
+
 
 const drawerWidth = 360;
 
@@ -42,10 +45,8 @@ class ChatBar extends React.Component {
 		super(props);
 
 		this.state = {
-			isMobile: false
-		}
-
-		this.state.anchorEl = null;
+			anchorEl: null
+		};
 
 		this.handleSelectSourceMenu = this.handleSelectSourceMenu.bind(this);
 		this.handleSelectSource = this.handleSelectSource.bind(this);
@@ -61,8 +62,7 @@ class ChatBar extends React.Component {
 		this.state.anchorEl = null;
 		this.setState(this.state);
 		if(e){
-			this.props.toggleChannel(e);
-			this.props.readRoom(this.props.chat.roomId);
+			this.props.readChannel(e);
 		}
 	}
 
@@ -83,21 +83,21 @@ class ChatBar extends React.Component {
 			            onClick={this.handleMenuToggle}
 			            className={classes.menuButton}
 			    	>
-			    		<Badge badgeContent={dataApp.unreadMessages} color="secondary">
+			    		<Badge badgeContent={this.props.chats.unread} color="secondary">
 		       				<MenuIcon />
 		       			</Badge>
 		          	</IconButton>
 		          	<Typography variant="h6" className={classes.headerTitle}>
-		            	{this.props.chat.roomId || "Чат не выбран"}
+		            	{this.props.chats.roomId || "Чат не выбран"}
 		          	</Typography>
-		          	<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.ALL] : null} color="secondary">
+		          	<Badge badgeContent={this.props.chats.roomId? this.props.chats.rooms[this.props.chats.roomId].unread[CHANNELS.ALL] : null} color="secondary">
 						<Button 
 			          		color="inherit"
 			          		aria-controls="simple-menu" 
 			          		aria-haspopup="true" 
 			          		onClick={this.handleSelectSourceMenu}
 			          	>
-			          		{this.props.chat.channelId}
+			          		{this.props.chats.channelId}
 			          	</Button>
 		          	</Badge>
 		          	<Menu
@@ -110,31 +110,40 @@ class ChatBar extends React.Component {
 					>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.VK)}
-							selected={this.props.chat.channelId === CHANNELS.VK}
+							selected={this.props.chats.channelId === CHANNELS.VK}
 						>
-							<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.VK] : null} color="secondary">
+							<Badge
+								badgeContent={this.props.chats.roomId? this.props.chats.rooms[this.props.chats.roomId].unread[CHANNELS.VK] : null}
+								color="secondary"
+							>
 								VK
 							</Badge>
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.OK)}
-							selected={this.props.chat.channelId === CHANNELS.OK}
+							selected={this.props.chats.channelId === CHANNELS.OK}
 						>
-							<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.OK] : null} color="secondary">
+							<Badge
+								badgeContent={this.props.chats.roomId? this.props.chats.rooms[this.props.chats.roomId].unread[CHANNELS.OK] : null}
+								color="secondary"
+							>
 								OK
 							</Badge>
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.FB)}
-							selected={this.props.chat.channelId === CHANNELS.FB}
+							selected={this.props.chats.channelId === CHANNELS.FB}
 						>
-							<Badge badgeContent={this.props.chat.roomId? dataApp.rooms[this.props.chat.roomId].unread[CHANNELS.FB] : null} color="secondary">
+							<Badge
+								badgeContent={this.props.chats.roomId? this.props.chats.rooms[this.props.chats.roomId].unread[CHANNELS.FB] : null}
+								color="secondary"
+							>
 								FB
 							</Badge>
 						</MenuItem>
 						<MenuItem
 							onClick={e => this.handleSelectSource(CHANNELS.ALL)}
-							selected={this.props.chat.channelId == CHANNELS.ALL}
+							selected={this.props.chats.channelId == CHANNELS.ALL}
 						>
 							All channels
 						</MenuItem>
@@ -147,10 +156,10 @@ class ChatBar extends React.Component {
 
 
 ChatBar.propTypes = {
-  classes: PropTypes.object.isRequired,
+	classes: PropTypes.object.isRequired,
 };
 
 export default connect(
-  state => state,
-  { toggleMenu, toggleChannel, readRoom }
+	state => state,
+	{ toggleMenu, readChannel }
 )(withStyles(styles)(ChatBar));

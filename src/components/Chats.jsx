@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {
-	withStyles,
-	makeStyles
-} from '@material-ui/core/styles';
+
+import { connect } from "react-redux";
+import { readRoom, toggleMenu } from "../redux/actions";
+import { CHANNELS } from "../channels";
+
 import {
 	Paper,
 	CardHeader,
@@ -17,10 +17,15 @@ import {
 	Avatar,
 	Typography 
 } from '@material-ui/core';
-import { connect } from "react-redux";
-import { toggleRoom, readRoom, toggleMenu } from "../redux/actions";
-import { CHANNELS } from "../channels";
+
+import PropTypes from 'prop-types';
+import {
+	withStyles,
+	makeStyles
+} from '@material-ui/core/styles';
+
 import { preferTime } from "../App.js";
+
 
 const styles = theme => ({
 	root: {
@@ -71,7 +76,7 @@ function MessagePreview(props) {
 	              <Typography
 	                component="span"
 	                variant="body2"
-	                className={ classes.timeDialog }
+	                className={classes.timeDialog}
 	                color="textPrimary"
 	              >
 	                {preferTime(props.message.ts)}
@@ -79,27 +84,27 @@ function MessagePreview(props) {
 	            </React.Fragment>
 	          }
 	          secondary={
-	            <React.Fragment>
-	              <Typography
-	                component="span"
-	                variant="body2"
-	                className={classes.inline}
-	                color="textPrimary"
-	              >
-	              	{props.message.autor}
-	              </Typography>
-	              {" — "+(props.message.body.length > 110? props.message.body.substring(0, 110) + "..." : props.message.body)}
-	              {
-	              	props.unread[CHANNELS.ALL] > 0?
-		              	<Typography
-			                component="span"
-			                variant="body2"
-			            	className={classes.unreadDialog}
-			        	>
-			            	{props.unread[CHANNELS.ALL]}
-			            </Typography>
-		            : null
-	              }	              
+	          	<React.Fragment>
+	            	<Typography
+		                component="span"
+		                variant="body2"
+		                className={classes.inline}
+		                color="textPrimary"
+	              	>
+	              		{props.message.autor}
+	              	</Typography>
+	              	{" — "+(props.message.body.length > 110? props.message.body.substring(0, 110) + "..." : props.message.body)}
+		        	{
+		            	props.unread[CHANNELS.ALL] > 0?
+			              	<Typography
+				                component="span"
+				                variant="body2"
+				            	className={classes.unreadDialog}
+				        	>
+				            	{props.unread[CHANNELS.ALL]}
+				            </Typography>
+			            : null
+		        	}	              
 	            </React.Fragment>
 	          }
 	        />
@@ -110,12 +115,11 @@ function MessagePreview(props) {
 class Chats extends React.Component {
 	constructor(props){
 		super(props);
-		this.state = {}
+
 		this.handleSelectRoom = this.handleSelectRoom.bind(this);
 	}
 
 	handleSelectRoom(e) {
-		this.props.toggleRoom(e);
 		this.props.readRoom(e);
 		this.props.toggleMenu();
 	}
@@ -142,7 +146,7 @@ class Chats extends React.Component {
 			  					roomId={roomId}
 			  					message={this.props.chats.rooms[roomId].lastMessage}
 			  					onClick={e => this.handleSelectRoom(roomId)}
-			  					selected={this.props.chat.roomId === roomId}
+			  					selected={this.props.chats.roomId === roomId}
 			  					unread={this.props.chats.rooms[roomId].unread}
 			  				/>
 			  				{(i != this.props.chats.timeline.length-1)? <Divider variant="inset" component="li" /> : null}		  			
@@ -164,10 +168,10 @@ class Chats extends React.Component {
 
 
 Chats.propTypes = {
-  classes: PropTypes.object.isRequired,
+	classes: PropTypes.object.isRequired,
 };
 
 export default connect(
-  state => state,
-  { toggleRoom, readRoom, toggleMenu }
+	state => state,
+	{ readRoom, toggleMenu }
 )(withStyles(styles)(Chats));

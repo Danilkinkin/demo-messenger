@@ -1,14 +1,9 @@
-import { TOGGLE_MENU, TOGGLE_CHANNEL, SEND_MESSAGE, TOGGLE_ROOM, READ_ROOM } from './actionTypes'
+import { TOGGLE_MENU, SEND_MESSAGE, READ_ROOM,  READ_CHANNEL } from './actionTypes'
 
 //app
 export const toggleMenu = isMobile => ({
   type: TOGGLE_MENU,
   payload: { isMobile }
-})
-
-export const toggleChannel = channelId => ({
-  type: TOGGLE_CHANNEL,
-  payload: { channelId }
 })
 
 //chat
@@ -17,13 +12,12 @@ export const sendMessage = message => ({
   payload: { message }
 })
 
-export const toggleRoom = roomId => ({
-  type: TOGGLE_ROOM,
-  payload: { roomId }
-})
-
-//chats
 export const readRoom = roomId => ({
   type: READ_ROOM,
   payload: { roomId }
+})
+
+export const readChannel = channelId => ({
+  type: READ_CHANNEL,
+  payload: { channelId }
 })

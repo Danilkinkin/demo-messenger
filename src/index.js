@@ -5,7 +5,7 @@ let app = require('./server').default;
 
 const server = http.createServer(app);
 
-const io = require('socket.io')(server)
+//const io = require('socket.io')(server)
 
 let currentApp = app;
 
@@ -40,7 +40,7 @@ if (module.hot) {
 }
 
 
-
+/*
 
 io.on('connection', client => { 
 
@@ -65,7 +65,7 @@ io.on('connection', client => {
               ts: new Date(),
           });
       }
-      timeoutId = setTimeout(emit, randomBetween(1500, 10000));
+      timeoutId = setTimeout(emit, randomBetween(2500, 10000));
   }  
 
   function handle(message) {
@@ -84,4 +84,4 @@ function randomBetween(min, max) {
 
 function randomChoose(array) {
     return array[randomBetween(0, array.length - 1)];
-}
+}*/

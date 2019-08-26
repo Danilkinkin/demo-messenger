@@ -1,62 +1,59 @@
 import React from 'react';
-import Chat from './components/Chat.jsx';
-import ChatBar from './components/ChatBar.jsx';
-import ChatsActivity from './components/Chats.jsx';
-import PropTypes from 'prop-types';
-import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
-import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
+
+import { connect } from "react-redux";
+import { toggleMenu } from "./redux/actions";
+
 import {
 	CssBaseline,
 	Drawer,
 	Hidden
 } from '@material-ui/core';
-import { connect } from "react-redux";
-import { toggleMenu } from "./redux/actions";
-import dataApp from "./dataApp.js";
+
+import PropTypes from 'prop-types';
+import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
+
+import Chat from './components/Chat.jsx';
+import ChatBar from './components/ChatBar.jsx';
+import ChatsActivity from './components/Chats.jsx';
+
 
 const drawerWidth = 360;
 
-const styles = theme => {
-	console.log(theme)
-	return{
-		root: {
-			display: 'flex',
-			height: "100%"
+const styles = theme => ({
+	root: {
+		display: 'flex',
+		height: "100%"
+	},
+	drawer: {
+		[theme.breakpoints.up('md')]: {
+			width: drawerWidth,
+			flexShrink: 0,
 		},
-		drawer: {
-			[theme.breakpoints.up('md')]: {
-				width: drawerWidth,
-				flexShrink: 0,
-			},
+	},
+	mobileMenu: {
+		[theme.breakpoints.up('md')]: {
+			display: 'none',
 		},
-		mobileMenu: {
-			[theme.breakpoints.up('md')]: {
-				display: 'none',
-			},
-		},
-		drawerPaper: {
-			maxWidth: drawerWidth,
-			width: "100%"
-		},
-		toolbar: theme.mixins.toolbar,
-		content: {
-			flexGrow: 1,
-			padding: theme.spacing(3),
-			display: "flex",
-	    	flexDirection: "column",
-	    	position: "relative"
-		}
+	},
+	drawerPaper: {
+		maxWidth: drawerWidth,
+		width: "100%"
+	},
+	toolbar: theme.mixins.toolbar,
+	content: {
+		flexGrow: 1,
+		padding: theme.spacing(3),
+		display: "flex",
+    	flexDirection: "column",
+    	position: "relative"
 	}
-};
+});
 
 class Home extends React.Component {
 	constructor(props){
 		super(props);
 		document.title = "Чаты";
-
-		this.state = {
-
-		}
 
 		this.handleMenuToggle = this.handleChatsActivityToggle.bind(this);
 	}
@@ -68,7 +65,9 @@ class Home extends React.Component {
 	render(){
 		const { classes } = this.props;
 
-		if(dataApp.unreadMessages > 0) document.title = "Новых сообщений: " + dataApp.unreadMessages;
+		console.log(this.props)
+
+		if(this.props.chats.unread > 0) document.title = "Новых сообщений: " + this.props.chats.unread;
 		else document.title = "Чаты";
 
 		if(isWidthUp('md', this.props.width) && this.props.app.isMobile) this.props.toggleMenu();
@@ -111,7 +110,10 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  classes: PropTypes.object.isRequired,
+	classes: PropTypes.object.isRequired,
 };
 
-export default connect(state => state, { toggleMenu })(withWidth()(withStyles(styles)(Home)));
+export default connect(
+	state => state,
+	{ toggleMenu }
+)(withWidth()(withStyles(styles)(Home)));

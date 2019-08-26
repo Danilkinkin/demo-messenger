@@ -1,7 +1,9 @@
 import React from 'react';
-import MessageInput from './MessageInput.jsx';
-import PropTypes from 'prop-types';
-import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
+
+import { connect } from "react-redux";
+import { readRoom } from "../redux/actions";
+import { CHANNELS } from "../channels";
+
 import {	
 	Container,
 	List,
@@ -12,18 +14,21 @@ import {
 	Fab,
 	Zoom
 } from '@material-ui/core';
-import { connect } from "react-redux";
-import { readRoom } from "../redux/actions";
-import { CHANNELS } from "../channels";
-import dataApp from "../dataApp.js";
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+
+import PropTypes from 'prop-types';
+import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
+
+import MessageInput from './MessageInput.jsx';
+
 import { preferTime } from "../App.js";
+
 
 const drawerWidth = 360;
 
 const styles = theme => {
 	transitionDuration = transitionDuration(theme);
-	console.log(transitionDuration)
+
 	return {
 		messages: {
 			flexGrow: 1
@@ -94,12 +99,9 @@ class Chat extends React.Component {
 
 	componentDidMount(){
 		this.state.messageList = document.getElementById("message-list");
-		//this.state.input = document.getElementById("input-wrp");
-		//this.checkUserScroll();
 	}
 
 	componentDidUpdate(){
-		//if(!this.state.userScroll && this.state.messageList) this.state.messageList.lastChild.scrollIntoView(false);
 		if(!this.state.userScroll && this.state.messageList) this.state.messageList.lastChild.scrollIntoView(false);
 	}
 
@@ -124,17 +126,17 @@ class Chat extends React.Component {
 		let chat = null;
 		let room = null;
 		let messages = null;
-		if(this.props.chat.roomId){
-			room = dataApp.rooms[this.props.chat.roomId];
-			messages = room.messages.filter(message => this.props.chat.channelId == CHANNELS.ALL || message.channelId == this.props.chat.channelId);
+		if(this.props.chats.roomId){
+			room = this.props.chats.rooms[this.props.chats.roomId];
+			messages = room.messages.filter(message => this.props.chats.channelId == CHANNELS.ALL || message.channelId == this.props.chats.channelId);
 		}
 
-		if(this.props.chat.roomId && messages != null && messages.length){
+		if(this.props.chats.roomId && messages != null && messages.length){
 			messages = messages.map((message, i) => {
 				let divider = null;
 
 				if(
-					this.props.chat.channelId == CHANNELS.ALL &&
+					this.props.chats.channelId == CHANNELS.ALL &&
 					(
 						i == 0 ||
 						room.messages[i-1].channelId != room.messages[i].channelId
@@ -190,7 +192,7 @@ class Chat extends React.Component {
 			chat = (
 				<div className={classes.selectDialogHelper}>
 					<Typography variant="subtitle2">
-		            	{messages != null? "Сообщений нет" : "Веберете чат"}
+		            	{messages != null? "В этом канале сообщений нет" : "Веберете чат"}
 		        	</Typography>
 	        	</div>
 			)
@@ -204,10 +206,10 @@ class Chat extends React.Component {
 
 
 Chat.propTypes = {
-  classes: PropTypes.object.isRequired,
+	classes: PropTypes.object.isRequired,
 };
 
 export default connect(
-  state => state,
-  { readRoom }
+	state => state,
+	{ readRoom }
 )(withStyles(styles)(Chat));

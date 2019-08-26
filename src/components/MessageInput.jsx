@@ -10,7 +10,6 @@ import {
 import SendIcon from '@material-ui/icons/Send';
 import { connect } from "react-redux";
 import { sendMessage, pushMessage, readRoom } from "../redux/actions";
-import dataApp from "../dataApp.js";
 
 const styles = theme => ({
 	root: {
@@ -76,7 +75,7 @@ class MessageInput extends React.Component {
 		if(text == "") return;
 
 		this.props.sendMessage(text);
-		this.props.readRoom(dataApp.selectRoomId);
+		this.props.readRoom(this.props.chats.roomId);
 		document.getElementById("input-message").value = this.state.message = ""
 		this.setState(this.state);
 	}

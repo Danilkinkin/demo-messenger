@@ -1,11 +1,13 @@
-import { PUSH_MESSAGE, READ_ROOM } from "../actionTypes";
+import { PUSH_MESSAGE, READ_ROOM, READ_CHANNEL, SEND_MESSAGE } from "../actionTypes";
 import store from "../store";
 import { CHANNELS } from "../../channels";
-import dataApp from "../../dataApp.js";
 
 const initialState = {
-  rooms: {},
-  timeline: []
+    rooms: {},
+    timeline: [],
+    roomId: null,
+    channelId: CHANNELS.ALL,
+    unread: 0
 };
 
 export default function(state = initialState, action) {
@@ -13,89 +15,131 @@ export default function(state = initialState, action) {
     case PUSH_MESSAGE: {
       let message = action.payload;
 
-      if(! initialState.rooms[message.roomId]){
-        initialState.rooms[message.roomId] = {
-          roomId: message.roomId,
-          messages: [],
-          lastMessage: null,
-          unread: {
-            [CHANNELS.VK]: 0,
-            [CHANNELS.OK]: 0,
-            [CHANNELS.FB]: 0,
-            [CHANNELS.ALL]: 0
-          }
-        };
-      }
+      let isUnread = state.roomId != message.roomId ||
+        state.channelId != message.channelId &&
+        state.channelId != CHANNELS.ALL;
 
-      initialState.rooms[message.roomId].messages.push({
-        channelId: message.channelId,
-        body: message.body,
-        ts: message.ts,
-        autor: message.autor || message.roomId
-      })
-
-      if(initialState.timeline[0] != message.roomId){
-        let findIndex = initialState.timeline.findIndex(roomId => roomId === message.roomId);
-
-        if(findIndex != -1) initialState.timeline.splice(findIndex, 1);
-
-
-        initialState.timeline.unshift(message.roomId);
-      }
-
-      if(dataApp.selectRoomId != null && initialState.timeline[0] != dataApp.selectRoomId){
-        let findIndex = initialState.timeline.findIndex(roomId => roomId === dataApp.selectRoomId);
-
-        if(findIndex != -1) initialState.timeline.splice(findIndex, 1);
-
-        initialState.timeline.unshift(dataApp.selectRoomId);
-      }
-
-      initialState.rooms[message.roomId].lastMessage = initialState.rooms[message.roomId].messages[initialState.rooms[message.roomId].messages.length-1];
-
-      dataApp.rooms = initialState.rooms;
-      dataApp.roomsTimeline = initialState.timeline;
-
-      if(
-        dataApp.selectRoomId != message.roomId ||
-        dataApp.selectChannelId != initialState.rooms[message.roomId].lastMessage.channelId &&
-        dataApp.selectChannelId != CHANNELS.ALL
-      ){
-        initialState.rooms[message.roomId].unread[initialState.rooms[message.roomId].lastMessage.channelId] += 1;
-        initialState.rooms[message.roomId].unread[CHANNELS.ALL] += 1;
-        dataApp.unreadMessages += 1;
-      }
-      
       return {
-        ...initialState
-      };
+        ...state,
+        rooms: {
+            ...state.rooms,
+            [message.roomId]: {
+                roomId: message.roomId,
+                messages: [
+                    ...(state.rooms[message.roomId]? state.rooms[message.roomId].messages : []),
+                    {
+                        channelId: message.channelId,
+                        body: message.body,
+                        ts: message.ts,
+                        autor: message.autor || message.roomId
+                    }
+                ],
+                lastMessage: {
+                    channelId: message.channelId,
+                    body: message.body,
+                    ts: message.ts,
+                    autor: message.autor || message.roomId
+                },
+                unread: {
+                    [CHANNELS.VK]: 0,
+                    [CHANNELS.OK]: 0,
+                    [CHANNELS.FB]: 0,
+                    ...(state.rooms[message.roomId]? state.rooms[message.roomId].unread : {}),
+                    [message.channelId]: (state.rooms[message.roomId]? state.rooms[message.roomId].unread[message.channelId] : 0) + (+isUnread),
+                    [CHANNELS.ALL]: (state.rooms[message.roomId]? state.rooms[message.roomId].unread[CHANNELS.ALL] : 0) + (+isUnread)
+                }
+            }
+        },
+        timeline: [
+            ...(state.roomId != null && state.roomId != message.roomId? [state.roomId] : []),
+            message.roomId,
+            ...state.timeline.filter(roomId => roomId != state.roomId && roomId != message.roomId)
+        ],
+        unread: state.unread + (+isUnread)
+      }
     }
     case READ_ROOM: {
       const { roomId } = action.payload;
-
-      if(initialState.timeline[0] != roomId){
-        let findIndex = initialState.timeline.findIndex(searchRoomId => searchRoomId === roomId);
-
-        if(findIndex != -1) initialState.timeline.splice(findIndex, 1);
-
-        initialState.timeline.unshift(roomId);
-      }
-
-      dataApp.selectRoomId = roomId;
-
-      if(dataApp.selectChannelId == CHANNELS.ALL){
-        dataApp.unreadMessages -= initialState.rooms[roomId].unread[CHANNELS.ALL];
-        for(var channel in initialState.rooms[roomId].unread){
-          initialState.rooms[roomId].unread[channel] = 0;
-        }
-      }else{
-        initialState.rooms[roomId].unread[CHANNELS.ALL] -= initialState.rooms[roomId].unread[dataApp.selectChannelId];
-        dataApp.unreadMessages -= initialState.rooms[roomId].unread[dataApp.selectChannelId];
-        initialState.rooms[roomId].unread[dataApp.selectChannelId] = 0;
-      }
-      
+      console.log(state.unread, state.rooms[roomId].unread[state.channelId])
       return {
-        ...initialState
+        ...state,
+        rooms: {
+            ...state.rooms,
+            [roomId]: {
+                ...state.rooms[roomId],
+                unread: {
+                    ...state.rooms[roomId].unread,
+                    [state.channelId]: 0,
+                    [CHANNELS.ALL]: state.rooms[roomId].unread[CHANNELS.ALL] - state.rooms[roomId].unread[state.channelId],
+                    ...(state.channelId == CHANNELS.ALL? {
+                        [CHANNELS.VK]: 0,
+                        [CHANNELS.FB]: 0,
+                        [CHANNELS.OK]: 0
+                    }: {})
+                }
+            }
+        },
+        timeline: [
+            roomId,
+            ...state.timeline.filter(checkRoomId => checkRoomId != roomId)
+        ],
+        roomId: roomId,
+        unread: state.unread - state.rooms[roomId].unread[state.channelId]
+      }
+    }
+    case READ_CHANNEL: {
+      const { channelId } = action.payload;
+
+      return {
+        ...state,
+        rooms: {
+            ...state.rooms,
+            ...(
+                state.roomId != null?
+                    {
+                        [state.roomId]: {
+                            ...state.rooms[state.roomId],
+                            unread: {
+                                ...state.rooms[state.roomId].unread,
+                                [channelId]: 0,
+                                [CHANNELS.ALL]: state.rooms[state.roomId].unread[CHANNELS.ALL] - state.rooms[state.roomId].unread[channelId]
+                            }
+                        }
+                    }
+                : {}
+            )
+            
+        },
+        channelId: channelId,
+        unread: state.unread - (state.roomId != null? state.rooms[state.roomId].unread[channelId] : 0)
+      }
+    }
+    case SEND_MESSAGE: {
+      const { message } = action.payload;
+
+      return {
+        ...state,
+        rooms: {
+            ...state.rooms,
+            [state.roomId]: {
+                ...state.rooms[state.roomId],
+                messages: [
+                    ...state.rooms[state.roomId].messages,
+                    {   
+                        autor: "Me",
+                        channelId: state.rooms[state.roomId].lastMessage.channelId,
+                        body: message,
+                        ts: new Date()
+                    }
+                ],
+                lastMessage: {
+                    autor: "Me",
+                    channelId: state.rooms[state.roomId].lastMessage.channelId,
+                    body: message,
+                    ts: new Date()
+                }
+            }
+        }
       };
     }
     default:
